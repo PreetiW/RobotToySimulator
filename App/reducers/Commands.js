@@ -2,9 +2,9 @@ import { PLACEROBOT, MOVEBYONE, LEFTDIRECTION, RIGHTDIRECTION, REPORTROBOT } fro
 
 
 const INITIAL_STATE = {
-  xCoordinate: 0,
-  yCoordinate: 1,
-  facing: 'east'
+  xCoordinate: -1,
+  yCoordinate: -1,
+  facing: ''
 
 };
 
@@ -20,8 +20,6 @@ const yMin = 0;
 
 
 const Commands = (state = INITIAL_STATE, action) => {
-  console.log(action.type);
-  console.log(action.payload);
  
   switch (action.type) {
     case PLACEROBOT:

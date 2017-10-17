@@ -6,12 +6,14 @@ import {
   Text,
   View,
   Button,
-  TouchableOpacity
+  TouchableOpacity,
+  Image
 } from 'react-native';
 
 import { connect } from 'react-redux';
 import { placeRobot, reportRobot, moveByOne, leftDirection, rightDirection } from '../actions';
 import InputDialog  from './InputDialog';
+import _ from 'lodash';
 
 class RobotToy extends Component {
 
@@ -49,24 +51,38 @@ class RobotToy extends Component {
   render() {
     let { xCoordinate, yCoordinate, facing } = this.state;
 
+    let robotInformation = (xCoordinate >= 0 && yCoordinate >=0 && !_.isEmpty(facing)) ?
+     <Text> currently at {xCoordinate},{yCoordinate} facing {facing} direction ;)</Text> : 
+     <Text> place me in your favorite (5x5) place and start moving me around, otherwise I'll be roaming in this universe forever :(</Text>;
+
+
     return (
       <View style={styles.container}>
-          <InputDialog/>
+          <Image
+            source={require('../img/android-female.jpg')}
+            style={{width: 150, height: 150}}/>
+
           <Text style={styles.welcome}>
-            Welcome I am Android Robot! currently at {xCoordinate},{yCoordinate} facing {facing} direction ;)
+            Welcome! I am PreetiBot! 
+            {robotInformation}
           </Text>
 
-          <View>  
-            <TouchableOpacity onPress={this.props.onMove}>
-              <Text>Move</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this.props.onLeftDirection}>
-              <Text>Go Left</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this.props.onRightDirection}>
-              <Text>Go Right</Text>
-            </TouchableOpacity>
-          </View>
+          <InputDialog onPlaceRobot = {this.props.onPlaceRobot}/>
+
+          {
+            (xCoordinate >= 0 && yCoordinate >=0 && !_.isEmpty(facing)) ?
+            <View>  
+              <TouchableOpacity onPress={this.props.onMove}>
+                <Text style={styles.textButtons}>MOVE</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.props.onLeftDirection}>
+                <Text style={styles.textButtons}>TURN LEFT</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.props.onRightDirection}>
+                <Text style={styles.textButtons}>TURN RIGHT</Text>
+              </TouchableOpacity>
+            </View> : null
+          }
       </View>
     );
   }
@@ -88,12 +104,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#FFFFFF',
   },
   welcome: {
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
+  },
+  textButtons: {
+    fontSize: 14,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginVertical: 8, 
+    padding: 8
   }
 });
 
