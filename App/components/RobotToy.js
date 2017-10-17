@@ -10,29 +10,63 @@ import {
 } from 'react-native';
 
 import { connect } from 'react-redux';
-import { placeRobot } from '../actions';
+import { placeRobot, reportRobot, moveByOne, leftDirection, rightDirection } from '../actions';
+import InputDialog  from './InputDialog';
 
 class RobotToy extends Component {
 
   constructor(props){
     super(props);
+
+    this.state = {
+      xCoordinate: -1,
+      yCoordinate: -1,
+      facing: ''
+    }
+
     this.handleOnPress = this.handleOnPress.bind(this);
   }
 
   componentWillMount(){
-    console.log("I am ready");
-    console.log(this.props);
+    let { xCoordinate, yCoordinate, facing } = this.props.robotDetails;
+    this.setState({ 
+      xCoordinate: xCoordinate,
+      yCoordinate: yCoordinate,
+      facing: facing
+    })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
+    let { xCoordinate, yCoordinate, facing } = nextProps.robotDetails;
+    this.setState({ 
+      xCoordinate: xCoordinate,
+      yCoordinate: yCoordinate,
+      facing: facing
+    })
   }
 
   render() {
+    let { xCoordinate, yCoordinate, facing } = this.state;
+
     return (
       <View style={styles.container}>
-        <TouchableOpacity onPress={this.handleOnPress}>
+          <InputDialog/>
           <Text style={styles.welcome}>
-            Welcome!
+            Welcome I am Android Robot! currently at {xCoordinate},{yCoordinate} facing {facing} direction ;)
           </Text>
-        </TouchableOpacity>
 
+          <View>  
+            <TouchableOpacity onPress={this.props.onMove}>
+              <Text>Move</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.props.onLeftDirection}>
+              <Text>Go Left</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.props.onRightDirection}>
+              <Text>Go Right</Text>
+            </TouchableOpacity>
+          </View>
       </View>
     );
   }
@@ -40,9 +74,9 @@ class RobotToy extends Component {
   handleOnPress(){
     console.log("Got Pressed");
     let payload = {
-       XCoordinate: -1,
-        YCoordinate: -1,
-        Facing: ''
+      xCoordinate: 0,
+      yCoordinate: 4,
+      facing: 'north'
     };
     this.props.onPlaceRobot(payload);
 
@@ -65,14 +99,16 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    commands: state.Commands
+    robotDetails: state.Commands
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  onPlaceRobot: (payload) => {
-   console.log("Preeti");
-   dispatch(placeRobot(payload)) }
+  onPlaceRobot: (payload) => { dispatch(placeRobot(payload)) },
+  onReportRobot: () => { dispatch(reportRobot())},
+  onLeftDirection: () => { dispatch(leftDirection()) },
+  onRightDirection: () => { dispatch(rightDirection()) },
+  onMove: () => { dispatch(moveByOne())}
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(RobotToy);
